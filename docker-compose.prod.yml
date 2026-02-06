@@ -1,0 +1,50 @@
+services:
+  comment:
+    image: minisource/comment:${TAG:-latest}
+    container_name: comment-service
+    ports:
+      - "5010:5010"
+    environment:
+      - SERVER_PORT=5010
+      - MONGODB_URI=${MONGODB_URI}
+      - MONGODB_DATABASE=${MONGODB_DATABASE:-comment}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
+      - NOTIFIER_SERVICE_URL=${NOTIFIER_SERVICE_URL}
+      - NOTIFIER_ENABLED=${NOTIFIER_ENABLED:-true}
+      - MODERATION_REQUIRE_APPROVAL=${MODERATION_REQUIRE_APPROVAL:-false}
+      - LOG_LEVEL=info
+      - LOG_ENCODING=json
+    volumes:
+      - comment-logs:/app/logs
+    networks:
+      - minisource-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5010/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  comment-logs:
+
+networks:
+  minisource-network:
+    external: true

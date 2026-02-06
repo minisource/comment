@@ -1,0 +1,826 @@
+basePath: /api/v1
+definitions:
+  github_com_minisource_comment_internal_models.Attachment:
+    properties:
+      filename:
+        type: string
+      id:
+        type: string
+      mimeType:
+        type: string
+      size:
+        type: integer
+      type:
+        description: image, video, file
+        type: string
+      uploadedAt:
+        type: string
+      url:
+        type: string
+    type: object
+  github_com_minisource_comment_internal_models.Comment:
+    properties:
+      attachments:
+        items:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.Attachment'
+        type: array
+      authorAvatar:
+        type: string
+      authorEmail:
+        type: string
+      authorId:
+        description: Author info
+        type: string
+      authorName:
+        type: string
+      content:
+        description: Content
+        type: string
+      contentHtml:
+        description: Sanitized HTML
+        type: string
+      createdAt:
+        description: Timestamps
+        type: string
+      deletedAt:
+        type: string
+      deletedBy:
+        type: string
+      depth:
+        description: Depth for nested replies
+        type: integer
+      dislikeCount:
+        type: integer
+      editHistory:
+        items:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.EditRecord'
+        type: array
+      flaggedWords:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      isAnonymous:
+        type: boolean
+      isDeleted:
+        type: boolean
+      isEdited:
+        type: boolean
+      isPinned:
+        description: Features
+        type: boolean
+      likeCount:
+        type: integer
+      metadata:
+        additionalProperties: {}
+        type: object
+      moderatedAt:
+        type: string
+      moderatedBy:
+        type: string
+      parentId:
+        description: For replies
+        type: string
+      pinnedAt:
+        type: string
+      pinnedBy:
+        type: string
+      reactionCounts:
+        additionalProperties:
+          type: integer
+        type: object
+      rejectionReason:
+        type: string
+      replyCount:
+        description: Stats
+        type: integer
+      reportCount:
+        type: integer
+      resourceId:
+        description: ID of the resource being commented on
+        type: string
+      resourceType:
+        description: e.g., "product", "ticket", "article"
+        type: string
+      rootId:
+        description: Root comment ID for nested replies
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/github_com_minisource_comment_internal_models.CommentStatus'
+        description: Moderation
+      tenantId:
+        description: Multi-tenant support (e.g., "shop", "ticket", "blog")
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  github_com_minisource_comment_internal_models.CommentStats:
+    properties:
+      approvedCount:
+        type: integer
+      averageRating:
+        type: number
+      pendingCount:
+        type: integer
+      reactionBreakdown:
+        additionalProperties:
+          format: int64
+          type: integer
+        type: object
+      rejectedCount:
+        type: integer
+      totalComments:
+        type: integer
+      totalReactions:
+        type: integer
+    type: object
+  github_com_minisource_comment_internal_models.CommentStatus:
+    enum:
+    - pending
+    - approved
+    - rejected
+    - spam
+    type: string
+    x-enum-varnames:
+    - StatusPending
+    - StatusApproved
+    - StatusRejected
+    - StatusSpam
+  github_com_minisource_comment_internal_models.CreateCommentRequest:
+    properties:
+      attachments:
+        items:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.Attachment'
+        type: array
+      authorName:
+        type: string
+      content:
+        maxLength: 5000
+        minLength: 1
+        type: string
+      isAnonymous:
+        type: boolean
+      metadata:
+        additionalProperties: {}
+        type: object
+      parentId:
+        type: string
+      resourceId:
+        type: string
+      resourceType:
+        type: string
+      tenantId:
+        type: string
+    required:
+    - content
+    - resourceId
+    - resourceType
+    - tenantId
+    type: object
+  github_com_minisource_comment_internal_models.EditRecord:
+    properties:
+      content:
+        type: string
+      editedAt:
+        type: string
+      editedBy:
+        type: string
+    type: object
+  github_com_minisource_comment_internal_models.ListCommentsResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.Comment'
+        type: array
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  github_com_minisource_comment_internal_models.ModerateCommentRequest:
+    properties:
+      rejectionReason:
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/github_com_minisource_comment_internal_models.CommentStatus'
+        enum:
+        - approved
+        - rejected
+        - spam
+    required:
+    - status
+    type: object
+  github_com_minisource_comment_internal_models.PinCommentRequest:
+    properties:
+      isPinned:
+        type: boolean
+    type: object
+  github_com_minisource_comment_internal_models.ReactionRequest:
+    properties:
+      type:
+        allOf:
+        - $ref: '#/definitions/github_com_minisource_comment_internal_models.ReactionType'
+        enum:
+        - like
+        - dislike
+        - love
+        - haha
+        - wow
+        - sad
+        - angry
+    required:
+    - type
+    type: object
+  github_com_minisource_comment_internal_models.ReactionType:
+    enum:
+    - like
+    - dislike
+    - love
+    - haha
+    - wow
+    - sad
+    - angry
+    type: string
+    x-enum-varnames:
+    - ReactionLike
+    - ReactionDislike
+    - ReactionLove
+    - ReactionHaha
+    - ReactionWow
+    - ReactionSad
+    - ReactionAngry
+  github_com_minisource_comment_internal_models.UpdateCommentRequest:
+    properties:
+      attachments:
+        items:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.Attachment'
+        type: array
+      content:
+        maxLength: 5000
+        minLength: 1
+        type: string
+    required:
+    - content
+    type: object
+  internal_handler.BulkModerateRequest:
+    properties:
+      comment_ids:
+        items:
+          type: string
+        type: array
+      rejection_reason:
+        type: string
+      status:
+        $ref: '#/definitions/github_com_minisource_comment_internal_models.CommentStatus'
+    type: object
+  internal_handler.BulkModerateResponse:
+    properties:
+      failed_count:
+        type: integer
+      failed_ids:
+        items:
+          type: string
+        type: array
+      success_count:
+        type: integer
+    type: object
+  internal_handler.ErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  internal_handler.HealthResponse:
+    properties:
+      services:
+        additionalProperties:
+          type: string
+        type: object
+      status:
+        type: string
+      timestamp:
+        type: string
+    type: object
+  internal_handler.LivenessResponse:
+    properties:
+      alive:
+        type: boolean
+    type: object
+  internal_handler.ReadinessResponse:
+    properties:
+      message:
+        type: string
+      ready:
+        type: boolean
+    type: object
+  internal_handler.SuccessResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  internal_handler.UserReactionResponse:
+    properties:
+      comment_id:
+        type: string
+      has_reacted:
+        type: boolean
+      reaction_type:
+        type: string
+    type: object
+host: localhost:5010
+info:
+  contact: {}
+  description: Comment management service for Minisource
+  title: Comment Service API
+  version: "1.0"
+paths:
+  /api/v1/admin/comments/{id}:
+    delete:
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Permanently delete a comment
+      tags:
+      - admin
+  /api/v1/admin/comments/{id}/moderate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Moderation data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.ModerateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_minisource_comment_internal_models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Moderate a comment (approve/reject)
+      tags:
+      - admin
+  /api/v1/admin/comments/{id}/pin:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Pin data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.PinCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_minisource_comment_internal_models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Pin or unpin a comment
+      tags:
+      - admin
+  /api/v1/admin/comments/bulk-moderate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bulk moderation data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_handler.BulkModerateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handler.BulkModerateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Bulk moderate comments
+      tags:
+      - admin
+  /api/v1/admin/comments/pending:
+    get:
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_minisource_comment_internal_models.Comment'
+            type: array
+      summary: Get pending comments for moderation
+      tags:
+      - admin
+  /api/v1/comments:
+    get:
+      parameters:
+      - description: Resource type
+        in: query
+        name: resource_type
+        required: true
+        type: string
+      - description: Resource ID
+        in: query
+        name: resource_id
+        required: true
+        type: string
+      - description: Status filter
+        in: query
+        name: status
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Sort field
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort order
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_minisource_comment_internal_models.ListCommentsResponse'
+      summary: List comments
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_minisource_comment_internal_models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Create a new comment
+      tags:
+      - comments
+  /api/v1/comments/{id}:
+    delete:
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Delete a comment
+      tags:
+      - comments
+    get:
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_minisource_comment_internal_models.Comment'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Get a comment by ID
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.UpdateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_minisource_comment_internal_models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Update a comment
+      tags:
+      - comments
+  /api/v1/comments/{id}/reactions:
+    delete:
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Remove a reaction from a comment
+      tags:
+      - reactions
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Reaction data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_minisource_comment_internal_models.ReactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handler.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: Add or update a reaction to a comment
+      tags:
+      - reactions
+  /api/v1/comments/{id}/reactions/me:
+    get:
+      parameters:
+      - description: Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handler.UserReactionResponse'
+      summary: Get current user's reaction to a comment
+      tags:
+      - reactions
+  /api/v1/comments/{id}/replies:
+    get:
+      parameters:
+      - description: Parent Comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_minisource_comment_internal_models.Comment'
+            type: array
+      summary: Get replies to a comment
+      tags:
+      - comments
+  /api/v1/comments/search:
+    get:
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_minisource_comment_internal_models.Comment'
+            type: array
+      summary: Search comments
+      tags:
+      - comments
+  /api/v1/comments/stats:
+    get:
+      parameters:
+      - description: Resource type
+        in: query
+        name: resource_type
+        required: true
+        type: string
+      - description: Resource ID
+        in: query
+        name: resource_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_minisource_comment_internal_models.CommentStats'
+      summary: Get comment statistics
+      tags:
+      - comments
+  /health:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handler.HealthResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/internal_handler.HealthResponse'
+      summary: Health check
+      tags:
+      - health
+  /live:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handler.LivenessResponse'
+      summary: Liveness check
+      tags:
+      - health
+  /ready:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handler.ReadinessResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/internal_handler.ReadinessResponse'
+      summary: Readiness check
+      tags:
+      - health
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

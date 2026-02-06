@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  comment:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: comment-service
+    ports:
+      - "5010:5010"
+    environment:
+      - SERVER_PORT=5010
+      - MONGODB_URI=mongodb://mongo:27017
+      - MONGODB_DATABASE=comment
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - AUTH_SERVICE_URL=http://auth:5000
+      - NOTIFIER_SERVICE_URL=http://notifier:5001
+      - NOTIFIER_ENABLED=true
+      - MODERATION_REQUIRE_APPROVAL=true
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - minisource-network
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    container_name: comment-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - minisource-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: comment-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - minisource-network
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
+  redis-data:
+
+networks:
+  minisource-network:
+    external: true
