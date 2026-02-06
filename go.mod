@@ -16,7 +16,7 @@ require (
 	github.com/minisource/go-sdk v0.0.0-00010101000000-000000000000
 	github.com/stretchr/testify v1.11.1
 	github.com/swaggo/swag v1.16.4
-	go.mongodb.org/mongo-driver v1.17.1
+	go.mongodb.org/mongo-driver v1.17.8
 )
 
 require (
