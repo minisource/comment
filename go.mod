@@ -10,7 +10,7 @@ replace github.com/minisource/go-sdk => ../go-sdk
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.11
-	github.com/gofiber/swagger v1.1.0
+	github.com/gofiber/swagger v1.1.1
 	github.com/joho/godotenv v1.5.1
 	github.com/minisource/go-common v0.0.4-0.20250402190339-caa3304676a9
 	github.com/minisource/go-sdk v0.0.0-00010101000000-000000000000
@@ -61,7 +61,7 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rs/zerolog v1.33.0 // indirect
-	github.com/swaggo/files/v2 v2.0.0 // indirect
+	github.com/swaggo/files/v2 v2.0.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.63.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
