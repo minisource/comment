@@ -150,13 +150,25 @@ make run
 
 ### Docker
 
-```bash
-# Development
-docker-compose -f docker-compose.dev.yml up -d
+Images are published to [Docker Hub](https://hub.docker.com/orgs/minisource/repositories) on every successful build to `main`.
 
-# Production
-docker-compose up -d
+| Image | Tags |
+|-------|------|
+| `minisource/comment` | `latest`, commit SHA |
+
+```bash
+# Production (pre-built image)
+export TAG=latest
+docker compose -f docker-compose.prod.yml up -d
+
+# Development
+docker compose -f docker-compose.dev.yml up -d
 ```
+
+### GitHub Actions secrets
+
+- `DOCKERHUB_USERNAME` — Docker Hub username
+- `DOCKERHUB_TOKEN` — Docker Hub access token
 
 ### Testing
 

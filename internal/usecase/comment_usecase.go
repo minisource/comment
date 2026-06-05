@@ -493,9 +493,13 @@ func (u *CommentUsecase) sendNewCommentNotification(comment *models.Comment, set
 		notificationType = "comment.pending"
 	}
 
+	if u.cfg.Notifier.AdminUserID == "" {
+		return
+	}
+
 	notification := NotificationRequest{
 		Type:       notificationType,
-		Recipients: []string{"admin"}, // Will be replaced with actual admin IDs
+		Recipients: []string{u.cfg.Notifier.AdminUserID},
 		Title:      title,
 		Body:       truncateString(comment.Content, 100),
 		Data: map[string]string{

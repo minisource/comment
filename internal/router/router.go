@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/swagger"
 	"github.com/minisource/comment/config"
+	"github.com/minisource/comment/internal/client"
 	"github.com/minisource/comment/internal/database"
 	"github.com/minisource/comment/internal/handler"
 	"github.com/minisource/comment/internal/middleware"
@@ -37,8 +38,8 @@ func NewRouter(cfg *config.Config, db *database.MongoDB, logger logging.Logger) 
 	reportRepo := repository.NewReportRepository(db)
 	settingsRepo := repository.NewSettingsRepository(db)
 
-	// Create notifier client (placeholder)
-	var notifierClient usecase.NotifierClient = nil
+	// Notifier client for cross-service notifications
+	notifierClient := client.NewServiceNotifier(cfg)
 
 	// Create usecases
 	commentUsecase := usecase.NewCommentUsecase(commentRepo, reactionRepo, reportRepo, settingsRepo, notifierClient, cfg)
@@ -89,7 +90,9 @@ func (r *Router) Setup() *fiber.App {
 
 	// Setup auth middleware
 	authClient := auth.NewClient(auth.ClientConfig{
-		BaseURL: r.cfg.Auth.ServiceURL,
+		BaseURL:      r.cfg.Auth.ServiceURL,
+		ClientID:     r.cfg.Auth.ClientID,
+		ClientSecret: r.cfg.Auth.ClientSecret,
 	})
 
 	authMiddleware := middleware.AuthMiddleware(middleware.AuthConfig{

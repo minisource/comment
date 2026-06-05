@@ -61,6 +61,7 @@ type NotifierConfig struct {
 	ServiceURL   string
 	ClientID     string
 	ClientSecret string
+	AdminUserID  string
 	Enabled      bool
 }
 
@@ -118,6 +119,7 @@ func Load() (*Config, error) {
 			ServiceURL:   getEnv("NOTIFIER_SERVICE_URL", "http://localhost:5003"),
 			ClientID:     getEnv("NOTIFIER_CLIENT_ID", "comment-service"),
 			ClientSecret: getEnv("NOTIFIER_CLIENT_SECRET", "comment-service-secret-key"),
+			AdminUserID:  getEnv("NOTIFIER_ADMIN_USER_ID", ""),
 			Enabled:      getEnvAsBool("NOTIFIER_ENABLED", true),
 		},
 		Moderation: ModerationConfig{

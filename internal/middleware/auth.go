@@ -72,8 +72,11 @@ func AuthMiddleware(cfg AuthConfig) fiber.Handler {
 			}
 		}
 
-		// Set user info in context
-		c.Locals("user_id", result.ClientID)
+		userID := result.UserID
+		if userID == "" {
+			userID = result.ClientID
+		}
+		c.Locals("user_id", userID)
 		c.Locals("user_name", result.ServiceName)
 		c.Locals("client_id", result.ClientID)
 
@@ -84,7 +87,8 @@ func AuthMiddleware(cfg AuthConfig) fiber.Handler {
 // hasAdminScope checks if user has admin scope
 func hasAdminScope(scopes []string) bool {
 	for _, scope := range scopes {
-		if scope == "admin" || scope == "comments:moderate" {
+		switch scope {
+		case "admin", "super_admin", "comments:moderate":
 			return true
 		}
 	}
